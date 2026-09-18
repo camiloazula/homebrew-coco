@@ -1,5 +1,5 @@
 class CocoMcp < Formula
-  desc "Inspect and debug MCP servers in depth, from the command line or a native window"
+  desc "Inspect and debug MCP servers in depth, from the command-line or a native window"
   homepage "https://github.com/camiloazula/coco-mcp"
   url "https://github.com/camiloazula/coco-mcp/archive/refs/tags/v0.1.0.tar.gz"
   sha256 "f748f2a8b0c0923d7c1c07024297bda2b9029187783c7c0c35143303448ae84e"
