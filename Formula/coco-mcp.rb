@@ -2,7 +2,7 @@ class CocoMcp < Formula
   desc "Inspect and debug MCP servers in depth, from the command-line or a native window"
   homepage "https://github.com/camiloazula/coco-mcp"
   url "https://github.com/camiloazula/coco-mcp/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "f748f2a8b0c0923d7c1c07024297bda2b9029187783c7c0c35143303448ae84e"
+  sha256 "04a4b81620b7402e11e0924ffb712e7e13317288dadffaa2f6b0642f294a9a82"
   license any_of: ["MIT", "Apache-2.0"]
   head "https://github.com/camiloazula/coco-mcp.git", branch: "main"
 
