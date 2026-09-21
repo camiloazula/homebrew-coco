@@ -1,21 +1,34 @@
 class CocoMcp < Formula
   desc "Inspect and debug MCP servers in depth, from the command-line or a native window"
   homepage "https://github.com/camiloazula/coco-mcp"
-  url "https://github.com/camiloazula/coco-mcp/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "04a4b81620b7402e11e0924ffb712e7e13317288dadffaa2f6b0642f294a9a82"
+  version "0.1.0"
   license any_of: ["MIT", "Apache-2.0"]
-  head "https://github.com/camiloazula/coco-mcp.git", branch: "main"
 
-  # New versions are the GitHub releases of the main repository.
+  # New versions are the GitHub releases of the main repository; each one
+  # carries the archives below, built by its release workflow from the tag.
   livecheck do
     url :stable
     strategy :github_latest
   end
 
-  depends_on "rust" => :build
+  on_macos do
+    on_arm do
+      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.1.0/coco-mcp-v0.1.0-aarch64-apple-darwin.tar.gz"
+      sha256 "1c7b4494f6eede27930445250783fa5b0cd4b304a747bcf0c00d18be8d2aad34"
+    end
+    on_intel do
+      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.1.0/coco-mcp-v0.1.0-x86_64-apple-darwin.tar.gz"
+      sha256 "51368ec0cccbfc830fc64058dfd4c058b2d32de01916b4f69a6299f74f3be27e"
+    end
+  end
 
   on_linux do
-    depends_on "pkg-config" => :build
+    on_intel do
+      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.1.0/coco-mcp-v0.1.0-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "5179c32df71b3a03098ff92465eef48cf991dd281d0de818ce6be2f56c754f51"
+    end
+
+    # Shared libraries the window links at run time.
     depends_on "fontconfig"
     depends_on "freetype"
     depends_on "libxkbcommon"
@@ -23,11 +36,11 @@ class CocoMcp < Formula
     depends_on "wayland"
   end
 
-  # Built from source on the user's machine, as `cargo install` does: the
-  # project ships no prebuilt binaries. The one binary carries both modes,
-  # `coco-mcp --cli` and `coco-mcp --desktop`.
+  # The one binary carries both modes, `coco-mcp --cli` and
+  # `coco-mcp --desktop`; the archive holds it next to the licences.
   def install
-    system "cargo", "install", *std_cargo_args(path: "apps/desktop")
+    bin.install "coco-mcp"
+    doc.install "README.md"
   end
 
   test do
