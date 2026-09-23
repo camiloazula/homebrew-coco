@@ -1,7 +1,7 @@
 class CocoMcp < Formula
   desc "Inspect and debug MCP servers in depth, from the command-line or a native window"
   homepage "https://github.com/camiloazula/coco-mcp"
-  version "0.2.0"
+  version "0.3.1"
   license any_of: ["MIT", "Apache-2.0"]
 
   # New versions are the GitHub releases of the main repository; each one
@@ -13,19 +13,19 @@ class CocoMcp < Formula
 
   on_macos do
     on_arm do
-      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.2.0/coco-mcp-v0.2.0-aarch64-apple-darwin.tar.gz"
-      sha256 "7bb525e66ca462daa6c523b2abc060c2ceb6f0ba52660b44d744726b801980a9"
+      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.3.1/coco-mcp-v0.3.1-aarch64-apple-darwin.tar.gz"
+      sha256 "345a464e2faf150ba95d8d5f12d02abefd3c3e1d42bdda6862f02d3d62969c81"
     end
     on_intel do
-      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.2.0/coco-mcp-v0.2.0-x86_64-apple-darwin.tar.gz"
-      sha256 "00d7243a36184d16cefdc6f3d8d50408b6d12f9af6105c6bc497e5a3ccb73568"
+      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.3.1/coco-mcp-v0.3.1-x86_64-apple-darwin.tar.gz"
+      sha256 "62046938e0a60ac6a260ae00706643a81a24b83d5f36c3a4768d0fd7dba92e7f"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.2.0/coco-mcp-v0.2.0-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "bf73dd3507173c5bcaede72169fdb3c5be2d0a2e882b0410f9ca81b9a8858696"
+      url "https://github.com/camiloazula/coco-mcp/releases/download/v0.3.1/coco-mcp-v0.3.1-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "b3d703a7a1128a1df0a6376549d3c18cf2ded853402170ec73674edfbdfd47a8"
     end
 
     # Shared libraries the window links at run time.
