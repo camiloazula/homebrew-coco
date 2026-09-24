@@ -1,0 +1,73 @@
+# Point the formula at the latest Coco MCP release. Runs when the main
+# repository's release workflow says a release is out, by hand with a
+# version, or every hour as a fallback. The change goes through a pull
+# request, as every change to main does here, which is merged once opened.
+name: bump
+
+on:
+  repository_dispatch:
+    types: [release]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "The release to point at, as X.Y.Z (empty: the latest)"
+        required: false
+      merge:
+        description: "Merge the pull request once opened"
+        type: boolean
+        default: true
+  schedule:
+    - cron: "47 * * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# A triggered run and the hourly one never bump at the same time.
+concurrency:
+  group: bump
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Version to point at
+        id: pick
+        env:
+          WANTED: ${{ inputs.version || github.event.client_payload.version }}
+        run: |
+          version="${WANTED:-$(gh api repos/camiloazula/coco-mcp/releases/latest --jq .tag_name | sed 's/^v//')}"
+          current=$(sed -n 's/^  version "\(.*\)"$/\1/p' Formula/coco-mcp.rb)
+          echo "release $version, formula $current"
+          if [ "$version" = "$current" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=$version" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Rewrite the formula, archives checked
+        if: steps.pick.outputs.skip != 'true'
+        run: scripts/bump.sh "${{ steps.pick.outputs.version }}"
+      - name: Pull request
+        if: steps.pick.outputs.skip != 'true'
+        env:
+          VERSION: ${{ steps.pick.outputs.version }}
+          MERGE: ${{ github.event_name != 'workflow_dispatch' || inputs.merge }}
+        run: |
+          branch="bump-$VERSION"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "coco-mcp $VERSION"
+          # A rerun after a failure finds the branch and the pull request.
+          git push --force origin "$branch"
+          if ! gh pr view "$branch" > /dev/null 2>&1; then
+            gh pr create --head "$branch" --title "coco-mcp $VERSION" \
+              --body "The formula points at the archives of [v$VERSION](https://github.com/camiloazula/coco-mcp/releases/tag/v$VERSION), each checked against the release's SHA256SUMS by download."
+          fi
+          if [ "$MERGE" = "true" ]; then
+            gh pr merge "$branch" --squash --delete-branch
+          fi
